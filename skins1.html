@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <form>
+    dog name   <input type="text" name="dogName"><br>
+    dog bread   <input type="text" name="bread"> <br>
+    dog color    <input type="text" name="color"><br>
+    dog weight  <input type="text" name="weight"><br>
+        <button onclick="add()">submit</button><br>
+
+    </form>
+
+
+
+    <script>
+
+            
+
+
+        const properties = ['dogName' , 'bread' , 'color' , 'weight']
+
+        const dogs = []
+
+        function add(){
+            event.preventDefault()
+            const form = document.querySelector('form')
+            const dog = {}
+            for(let prop of properties){
+                dog[prop] = form.elements[prop].value
+                if(!dog[prop]){
+                    if(document.querySelector('span')){
+                        document.querySelector('span').remove()
+                    }
+                    const errorMsg = document.createElement('span')
+                    
+                    errorMsg.innerHTML = prop + "all is requierd field"
+                    errorMsg.style.color = 'red'
+
+                    form.appendChild(errorMsg)
+
+                    return 
+                    
+                }
+                
+            }
+            dogs.push(dog)
+            console.log(dogs)
+            createTable()
+        }
+
+        function createTable(){
+            let table = null
+            if(document.querySelector('table')){// יש טבלה
+                table = document.querySelector('table')
+                const tableBody = document.querySelector('tbody')
+                tableBody.remove()
+            }
+            else{
+                 table = document.createElement('table')
+                 const tableHeaderRow = document.createElement('tr') 
+            for(let prop of properties){
+                const th = document.createElement('th')
+                th.innerHTML = prop
+                tableHeaderRow.appendChild(th)
+            }
+            table.appendChild(tableHeaderRow)
+            }
+            
+           const tbody = document.createElement('tbody')
+            for(let dog of dogs){
+                const tableRow = document.createElement('tr')
+                for(let key in dog){
+                    const td = document.createElement('td')
+                    td.innerHTML = dog[key]
+                    tableRow.appendChild(td)
+
+                }
+                const editButton = createButton('Edit' , dog.dogName)
+                const deleteButton = createButton('Delete' , dog.dogName)
+                const buttonsCell = document.createElement('td')
+                buttonsCell.appendChild(editButton)
+                buttonsCell.appendChild(deleteButton)
+                tableRow.appendChild(buttonsCell)
+                tbody.appendChild(tableRow)
+                table.appendChild(tbody)
+            }
+            const body = document.querySelector('body')
+            body.appendChild(table)
+            console.log(document.querySelector('table'))
+        }
+
+            function createButton(buttonText , buttonId){
+                const button = document.createElement('button')
+                button.setAttribute('id' , buttonId)
+                button.innerHTML = buttonText
+                button.onclick = function(){
+                    if(buttonText.toLowerCase() == 'delete'){
+                        if(dogs.length > 0){
+                            for(let i in dogs){
+                            if(dogs[i].dogName == buttonId){
+                                delete dogs[i]
+                                createTable()
+                                break;
+                            }
+                          }
+                        }
+                    }
+                }
+                return button
+                
+            }
+
+            
+
+
+
+
+
+
+        
+        
+
+
+
+
+
+
+    </script>
+
+
+</body>
+</html>
